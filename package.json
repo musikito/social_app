@@ -40,7 +40,10 @@
   },
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "server.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "concurrently": "^4.1.0",
+    "nodemon": "^1.19.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/musikito/social_app.git"
