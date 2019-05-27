@@ -6,6 +6,9 @@ const PORT = process.env.PORT || 5000;
 //connect to the DB
 connectDB();
 
+//Middleware
+app.use(express.json({ extended: false }));
+
 app.get("/", (req, res) => res.send("APP running"));
 
 //define the routes
