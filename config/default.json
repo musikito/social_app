@@ -1,3 +1,4 @@
 {
-    "mongoURI": "mongodb+srv://jmarteadmin:Papiton1@dict-h28av.mongodb.net/Dict?retryWrites=true"
+    "mongoURI": "mongodb+srv://jmarteadmin:Papiton1@dict-h28av.mongodb.net/Dict?retryWrites=true",
+    "jwtSecret": "SECRET"
 }
