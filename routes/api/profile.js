@@ -91,7 +91,9 @@ router.post(
 
     try {
       let profile = await Profile.findOne({ user: req.user.id });
-
+      /**
+       * if profile exists in DB, Update it
+       */
       if (profile) {
         // Update
         profile = await Profile.findOneAndUpdate(
@@ -99,14 +101,17 @@ router.post(
           { $set: profileFields },
           { new: true }
         );
-
+        /**
+         * return the whole profile
+         */
         return res.json(profile);
-      }
+      } //end if
 
       // Create
       profile = new Profile(profileFields);
-
+      //save the profile to the DB
       await profile.save();
+      //return the perofile
       res.json(profile);
     } catch (err) {
       console.error(err.message);
