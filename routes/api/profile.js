@@ -52,6 +52,9 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+    /**
+     * pull everything from the body
+     */
     const {
       company,
       website,
@@ -66,7 +69,7 @@ router.post(
       instagram,
       linkedin
     } = req.body;
-    //build profile OBJ
+    //build profile OBJ to save to the DB
     const profileFields = {};
     profileFields.user = req.user.id;
     if (company) profileFields.company = company;
@@ -86,13 +89,29 @@ router.post(
     if (linkedin) profileFields.social.linkedin = linkedin;
     if (instagram) profileFields.social.instagram = instagram;
 
+    try {
+      let profile = await Profile.findOne({ user: req.user.id });
 
-    try{
+      if (profile) {
+        // Update
+        profile = await Profile.findOneAndUpdate(
+          { user: req.user.id },
+          { $set: profileFields },
+          { new: true }
+        );
 
-    }catch(err){
+        return res.json(profile);
+      }
+
+      // Create
+      profile = new Profile(profileFields);
+
+      await profile.save();
+      res.json(profile);
+    } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");
     }
-  }// end of async
+  }
 );
 module.exports = router;
