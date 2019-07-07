@@ -168,7 +168,7 @@ router.get("/user/:user_id", async (req, res) => {
   } catch (err) {
     console.error(err.message);
     //check if the id is valid
-    if (err.kind == "ObjectId") {
+    if (err.kind === "ObjectId") {
       res.status(400).json({ msg: "Profile not found" });
     } //end if
     res.status(500).send("Server Error");
@@ -192,5 +192,218 @@ router.delete("/", auth, async (req, res) => {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
-});
+}); //end of delete profile
+
+/**
+ * @route   PUT api/profile/experience
+ * @desc    Add experience to the profile
+ * @access  Private
+ */
+
+router.put(
+  "/experience",
+  [
+    auth,
+    [
+      //do validation checks
+      check("title", "Title is requiered")
+        .not()
+        .isEmpty(),
+      check("company", "Company is requiered")
+        .not()
+        .isEmpty(),
+      check("from", "From is requiered")
+        .not()
+        .isEmpty()
+    ]
+  ],
+  async (req, res) => {
+    //check for errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      //return the errors
+      return res.status(400).json({ errors: errors.array() });
+    } //end if
+    //de-struct the body req
+    const {
+      title,
+      company,
+      location,
+      from,
+      to,
+      current,
+      description
+    } = req.body;
+
+    //create an object with the data taht users submit
+    const newExp = {
+      title,
+      company,
+      location,
+      from,
+      to,
+      current,
+      description
+    }; //end of newExpe object
+
+    //mongodb
+    try {
+      //fetch the profie from the Profile model
+      //and get user id from the body
+      const profile = await Profile.findOne({ user: req.user.id });
+
+      //add the experience with unshift that pushes
+      //to the beginning of the array
+      profile.experience.unshift(newExp);
+
+      //save it
+      await profile.save();
+
+      //return the profile as an json object
+      res.json(profile);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error");
+    } //end of try-catch
+  }
+); //end of PUT experience
+
+/**
+ * @route   DELETE api/profile/experience/:exp_id
+ * @desc    Delete experience from profile
+ * @access  Private
+ */
+router.delete("/experience/:exp_id", auth, async (req, res) => {
+  try {
+    //fetch the profie from the Profile model
+    //and get user id from the body
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    //get the index to be removed
+    //using map
+    const removeIndex = profile.experience
+      .map(item => item.id)
+      .indexOf(req.params.exp_id);
+
+    //use splice to take the index
+    profile.experience.splice(removeIndex, 1);
+
+    //save it
+    await profile.save();
+
+    //return the profile as a json object
+    res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  } //end of try-catch
+}); //end of delete exp
+
+/**
+ * @route   PUT api/profile/education
+ * @desc    Add education to the profile
+ * @access  Private
+ */
+
+router.put(
+  "/education",
+  [
+    auth,
+    [
+      //do validation checks
+      check("school", "School is requiered")
+        .not()
+        .isEmpty(),
+      check("degree", "Degree is requiered")
+        .not()
+        .isEmpty(),
+      check("fieldofstudy", "Field of Study is requiered")
+        .not()
+        .isEmpty(),
+      check("from", "From is requiered")
+        .not()
+        .isEmpty()
+    ]
+  ],
+  async (req, res) => {
+    //check for errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      //return the errors
+      return res.status(400).json({ errors: errors.array() });
+    } //end if
+    //de-struct the body req
+    const {
+      school,
+      degree,
+      fieldofstudy,
+      from,
+      to,
+      current,
+      description
+    } = req.body;
+
+    //create an object with the data taht users submit
+    const newEdu = {
+      school,
+      degree,
+      fieldofstudy,
+      from,
+      to,
+      current,
+      description
+    }; //end of newExpe object
+
+    //mongodb
+    try {
+      //fetch the profie from the Profile model
+      //and get user id from the body
+      const profile = await Profile.findOne({ user: req.user.id });
+
+      //add the experience with unshift that pushes
+      //to the beginning of the array
+      profile.education.unshift(newEdu);
+
+      //save it
+      await profile.save();
+
+      //return the profile as an json object
+      res.json(profile);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error");
+    } //end of try-catch
+  }
+); //end of PUT experience
+
+/**
+ * @route   DELETE api/profile/education/:edu_id
+ * @desc    Delete education from profile
+ * @access  Private
+ */
+router.delete("/education/:edu_id", auth, async (req, res) => {
+  try {
+    //fetch the profie from the Profile model
+    //and get user id from the body
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    //get the index to be removed
+    //using map
+    const removeIndex = profile.education
+      .map(item => item.id)
+      .indexOf(req.params.edu_id);
+
+    //use splice to take the index
+    profile.education.splice(removeIndex, 1);
+
+    //save it
+    await profile.save();
+
+    //return the profile as a json object
+    res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  } //end of try-catch
+}); //end of delete edu
 module.exports = router;
