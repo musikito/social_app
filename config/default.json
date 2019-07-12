@@ -1,4 +1,6 @@
 {
     "mongoURI": "mongodb+srv://jmarteadmin:Papiton1@dict-h28av.mongodb.net/Dict?retryWrites=true",
-    "jwtSecret": "SECRET"
+    "jwtSecret": "SECRET",
+    "githubClientId": "a16ff6a4531a36d7e613",
+    "githubSecret": "4f6a621d59f0bb983159b0db1a4491ad1e7d1455"
 }
